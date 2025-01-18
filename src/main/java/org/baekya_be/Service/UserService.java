@@ -60,4 +60,27 @@ public class UserService {
             }
         }
     }
+
+    public User findUserByLoginId(String loginId) throws Exception {
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = firestore.collection("User");
+        Query query = collectionRef.whereEqualTo("loginId", loginId);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+
+        List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+
+        // 디버깅 로그
+        System.out.println("Found documents count: " + documents.size());
+        for (DocumentSnapshot doc : documents) {
+            System.out.println("Document data: " + doc.getData());
+        }
+
+        if (!documents.isEmpty() && documents.get(0).contains("password")) {
+            return documents.get(0).toObject(User.class);
+        } else {
+            System.out.println("No valid user found for loginId: " + loginId);
+            return null;
+        }
+    }
+
 }

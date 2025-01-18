@@ -2,10 +2,12 @@ package org.baekya_be.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.baekya_be.Domain.User;
+import org.baekya_be.Dto.LoginRequest;
 import org.baekya_be.Service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -37,5 +39,39 @@ public class UserController {
         return ResponseEntity.ok("User added successfully");
     }
 
-    // for GitHub test
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) throws Exception {
+        // 입력 검증
+        if (loginRequest.getLoginId() == null || loginRequest.getLoginId().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Login ID is required");
+        }
+        if (loginRequest.getPassword() == null || loginRequest.getPassword().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Password is required");
+        }
+
+        User existingUser = userService.findUserByLoginId(loginRequest.getLoginId());
+
+        if (existingUser == null) {
+            System.out.println("User not found for loginId: " + loginRequest.getLoginId());
+            return ResponseEntity.status(404).body("User not found");
+        }
+
+        if (!existingUser.getPassword().equals(loginRequest.getPassword())) {
+            System.out.println("Invalid password for user: " + loginRequest.getLoginId());
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
+
+        // 세션에 사용자 정보 저장
+        session.setAttribute("user", existingUser);
+        System.out.println("Login successful for user: " + existingUser.getName());
+
+        return ResponseEntity.ok("Login successful for user: " + existingUser.getName());
+    }
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate(); // 세션 무효화
+        return ResponseEntity.ok("User logged out successfully");
+    }
 }
