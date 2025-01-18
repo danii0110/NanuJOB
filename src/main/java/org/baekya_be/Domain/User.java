@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.checkerframework.checker.signature.qual.Identifier;
 
-import java.util.Date;
-
 @Getter
 @Setter
 public class User {
