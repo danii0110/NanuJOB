@@ -38,4 +38,49 @@ public class SeniorService {
         }
         return list;
     }
+
+    public List<Senior> searchSeniors(String keyword) throws Exception {
+        List<Senior> list = new ArrayList<>();
+        Firestore firestore = FirestoreClient.getFirestore();
+
+        CollectionReference collectionRef = firestore.collection("Senior");
+        List<QueryDocumentSnapshot> documents = collectionRef.get().get().getDocuments();
+
+
+        for (QueryDocumentSnapshot document : documents) {
+            boolean flag = false;
+
+            List<String> stack = (List<String>) document.get("stack");
+            String experience = document.getString("experience");
+
+            if (stack != null) {
+                for (String item : stack) {
+                    if (item != null && item.equals(keyword)) {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!flag){
+                if (experience != null) {
+                    String[] words = experience.replace(".", "").split("\\s+");
+                    for (String word : words) {
+                        if (word.equals(keyword)) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (Objects.requireNonNull(document.getString("job")).equals(keyword) ||
+            Objects.requireNonNull(document.getString("name")).equals(keyword) ||
+            Objects.requireNonNull(document.getString("company")).equals(keyword) ||
+            flag) {
+                list.add(document.toObject(Senior.class));
+            }
+        }
+        return list;
+    }
 }

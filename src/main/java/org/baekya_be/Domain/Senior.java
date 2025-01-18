@@ -11,6 +11,7 @@ import java.util.List;
 public class Senior {
     @Identifier
     private String user_id;
+    private String name;
     private String job;
     private String company;
     private List<String> stack;

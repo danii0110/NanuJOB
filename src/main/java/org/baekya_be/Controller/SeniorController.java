@@ -1,13 +1,11 @@
 package org.baekya_be.Controller;
 
 import lombok.RequiredArgsConstructor;
+import org.baekya_be.DTO.SeniorSearchDTO;
 import org.baekya_be.Domain.Senior;
 import org.baekya_be.Service.SeniorService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +24,13 @@ public class SeniorController {
     @GetMapping("/filter-senior/{filter}")
     public ResponseEntity<List<Senior>> filterSenior(@PathVariable String filter) throws Exception{
         List<Senior> list = seniorService.seniorsFilter(filter);
+        return ResponseEntity.ok(list);
+    }
+
+    @PostMapping("/search-senior")
+    public ResponseEntity<List<Senior>> searchSenior(@RequestBody SeniorSearchDTO dto) throws Exception{
+        String keyword = dto.getKeyword();
+        List<Senior> list = seniorService.searchSeniors(keyword);
         return ResponseEntity.ok(list);
     }
 }
