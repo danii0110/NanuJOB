@@ -65,13 +65,14 @@ public class SeniorService {
         return list;
     }
 
-    public List<Senior> searchSeniors(String keyword) throws Exception {
+    /*public List<Senior> searchSeniors(String keyword) throws Exception {
         List<Senior> list = new ArrayList<>();
         Firestore firestore = FirestoreClient.getFirestore();
 
         CollectionReference collectionRef = firestore.collection("Senior");
         List<QueryDocumentSnapshot> documents = collectionRef.get().get().getDocuments();
 
+        List<String> keywords = Arrays.asList(keyword.split("[,\\s]+"));
 
         for (QueryDocumentSnapshot document : documents) {
             boolean flag = false;
@@ -108,6 +109,66 @@ public class SeniorService {
             Objects.requireNonNull(document.getString("name")).equals(keyword) ||
             Objects.requireNonNull(document.getString("company")).equals(keyword) ||
             flag) {
+                list.add(document.toObject(Senior.class));
+            }
+        }
+        return list;
+    }*/
+    public List<Senior> searchSeniors(String keyword) throws Exception {
+        List<Senior> list = new ArrayList<>();
+        Firestore firestore = FirestoreClient.getFirestore();
+
+        CollectionReference collectionRef = firestore.collection("Senior");
+        List<QueryDocumentSnapshot> documents = collectionRef.get().get().getDocuments();
+
+        List<String> keywords = Arrays.asList(keyword.split("[,\\s]+"));
+
+        for (QueryDocumentSnapshot document : documents) {
+            boolean matchFound = false;
+
+            List<String> stack = (List<String>) document.get("stack");
+            String experience = document.getString("experience");
+            String job = document.getString("job");
+            String name = document.getString("name");
+            String company = document.getString("company");
+
+            for (String keywordPart : keywords) {
+                if (!matchFound && stack != null) {
+                    for (String item : stack) {
+                        if (item != null && item.equals(keywordPart)) {
+                            matchFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!matchFound && experience != null) {
+                    String[] words = experience.replace(".", "").split("\\s+");
+                    for (String word : words) {
+                        String substring = "";
+                        if (word != null && word.length() > 1) {
+                            substring = word.substring(0, word.length() - 1);
+                        }
+                        if (word.equals(keywordPart) || substring.equals(keywordPart)) {
+                            matchFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!matchFound &&
+                        (Objects.equals(job, keywordPart) ||
+                                Objects.equals(name, keywordPart) ||
+                                Objects.equals(company, keywordPart))) {
+                    matchFound = true;
+                }
+
+                if (matchFound) {
+                    break;
+                }
+            }
+
+            if (matchFound) {
                 list.add(document.toObject(Senior.class));
             }
         }
