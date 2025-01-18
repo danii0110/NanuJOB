@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Slf4j
@@ -53,33 +50,36 @@ public class ChatController {
 
 
     @PostMapping("/ai")
-    public ResponseEntity<?> handleChatRequest(@RequestBody(required = false) Map<String, Object> userRequest) {
-        RestTemplate restTemplate = new RestTemplate();
+    public ResponseEntity<?> handleChatRequest(@RequestBody(required = false) String content) {
+        if (content == null || content.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Content cannot be empty.");
+        }
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + API_KEY);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(userRequest, headers);
+        Map<String, Object> requestPayload = new HashMap<>();
+        requestPayload.put("model", "gpt-3.5-turbo");
+        requestPayload.put("messages", Collections.singletonList(
+                Map.of("role", "user", "content", content)
+        ));
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestPayload, headers);
+        RestTemplate restTemplate = new RestTemplate();
 
         try {
-            log.info(API_KEY);
-            log.info("User Request: " + userRequest);
+            log.info("Sending request to OpenAI API...");
+            log.info("User content: " + content);
 
             ResponseEntity<String> response = restTemplate.postForEntity(OPENAI_API_URL, request, String.class);
+
             log.info("Response Status: " + response.getStatusCode());
             log.info("Response Body: " + response.getBody());
 
-            // firebase db에 데이터 저장하는 부분을 추가해야 합니다. 만약 오류가 난다면 여기를 수정하세요
-
-
-
-
-            //
-
-
             return ResponseEntity.ok(response.getBody());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error communicating with OpenAI API", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing the request.");
         }
     }
