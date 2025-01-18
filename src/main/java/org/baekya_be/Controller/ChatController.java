@@ -2,6 +2,7 @@ package org.baekya_be.Controller;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.baekya_be.DTO.SeniorExpDTO;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -106,12 +107,18 @@ public class ChatController {
             Thread.sleep(100);
 
             ResponseEntity<String> response2 = restTemplate2.postForEntity(OPENAI_API_URL, request2, String.class);
+//            SeniorExpDTO dto = new SeniorExpDTO()
+//
+//
+
 
             log.info("Response2 Status: " + response2.getStatusCode());
             log.info("Response2 Body: " + response2.getBody());
 
 
-            return ResponseEntity.ok(response2.getBody());
+
+
+            return ResponseEntity.ok(response.getBody());
 
 
         } catch (Exception e) {
