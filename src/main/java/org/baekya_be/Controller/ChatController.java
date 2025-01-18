@@ -32,20 +32,27 @@ public class ChatController {
     }
 
     @GetMapping("/chatbot")
-    public ResponseEntity<Map<String, Object>> initChatSession() {
+    public ResponseEntity<Object> initChat() {
 
         String welcomeMessage1 = "안녕하세요!";
         String welcomeMessage2 = "직무와 관련된 경험을 저에게 공유해주세요";
 
-        List<String> messages = new ArrayList<>();
-        messages.add(welcomeMessage1);
-        messages.add(welcomeMessage2);
+        List<Map<String, String>> response = new ArrayList<>();
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("role", "assistant");
-        response.put("content", messages);
+        Map<String, String> message1 = new HashMap<>();
+        message1.put("role", "assistant");
+        message1.put("content", welcomeMessage1);
 
-        return ResponseEntity.ok(response);
+        Map<String, String> message2 = new HashMap<>();
+        message2.put("role", "assistant");
+        message2.put("content", welcomeMessage2);
+
+        response.add(message1);
+        response.add(message2);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 
 
