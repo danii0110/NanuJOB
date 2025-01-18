@@ -1,6 +1,8 @@
 package org.baekya_be.Controller;
 
 import lombok.RequiredArgsConstructor;
+import org.baekya_be.DTO.SeniorAddDTO;
+import org.baekya_be.DTO.SeniorExpDTO;
 import org.baekya_be.DTO.SeniorSearchDTO;
 import org.baekya_be.Domain.Senior;
 import org.baekya_be.Service.SeniorService;
@@ -32,5 +34,15 @@ public class SeniorController {
         String keyword = dto.getKeyword();
         List<Senior> list = seniorService.searchSeniors(keyword);
         return ResponseEntity.ok(list);
+    }
+
+    @PostMapping("/add-senior")
+    public void addSenior(@RequestBody SeniorAddDTO dto) throws Exception{
+        seniorService.addSenior(dto);
+    }
+
+    @PatchMapping("/update-senior-experience")
+    public void updateSeniorExp(@RequestBody SeniorExpDTO dto) throws Exception{
+        seniorService.updateSeniorExperience(dto);
     }
 }

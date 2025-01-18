@@ -1,15 +1,13 @@
 package org.baekya_be.Service;
 
-import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import org.baekya_be.DTO.SeniorAddDTO;
+import org.baekya_be.DTO.SeniorExpDTO;
 import org.baekya_be.Domain.Senior;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class SeniorService {
@@ -23,6 +21,34 @@ public class SeniorService {
             list.add(document.toObject(Senior.class));
         }
         return list;
+    }
+
+    public void addSenior(SeniorAddDTO dto) throws Exception {
+        Senior senior = new Senior(dto.getUser_id(), dto.getName(), dto.getJob(), dto.getCompany(), dto.getStack(),dto.getCareer(),dto.getFilter());
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = firestore.collection("Senior");
+        collectionRef.document().set(senior);
+    }
+
+    public void updateSeniorExperience(SeniorExpDTO dto) throws Exception {
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference collectionRef = firestore.collection("Senior");
+
+        Query query = collectionRef.whereEqualTo("user_id", dto.getUser_id());
+
+        List<QueryDocumentSnapshot> documents = query.get().get().getDocuments();
+
+        if (documents.isEmpty()) {
+            throw new Exception("No document found with user_id: " + dto.getUser_id());
+        }
+
+        DocumentSnapshot document = documents.get(0);
+        String documentId = document.getId();
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("experience", dto.getExperience());
+
+        collectionRef.document(documentId).update(updates).get();
     }
 
     public List<Senior> seniorsFilter(String filter) throws Exception {
