@@ -17,7 +17,7 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("Baro Borrow API")
+                .title("나누JOB API")
                 .description("API Description")
                 .version("1.0.0");
     }
