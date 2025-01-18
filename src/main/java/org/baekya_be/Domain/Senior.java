@@ -16,5 +16,6 @@ public class Senior {
     private String company;
     private List<String> stack;
     private String experience;
-    private String filter; // enum [ "IT / 인터넷" ... ]
+    private int career;
+    private String filter; // enum [ "IT / 인터// 넷" ... ]
 }
