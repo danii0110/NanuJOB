@@ -150,10 +150,14 @@ public class SeniorService {
                     String[] words = experience.replace(".", "").split("\\s+");
                     for (String word : words) {
                         String substring = "";
+                        String substring2 = "";
                         if (word != null && word.length() > 1) {
                             substring = word.substring(0, word.length() - 1);
                         }
-                        if (word.equals(keywordPart) || substring.equals(keywordPart)) {
+                        if (word != null && word.length() > 2) {
+                            substring2 = word.substring(0, word.length() - 2);
+                        }
+                        if (word.equals(keywordPart) || substring.equals(keywordPart) || substring2.equals(keywordPart)) {
                             matchFound = true;
                             break;
                         }
