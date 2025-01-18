@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -34,16 +35,18 @@ public class UserService {
             // 첫 번째 결과를 User 객체로 반환
             return documents.get(0).toObject(User.class);
         } else {
-            return null;  // 해당 user_id가 없을 경우 null 반환
+            return null; // 해당 user_id가 없을 경우 null 반환
         }
     }
 
     public void addUser(User user) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
         CollectionReference collectionRef = firestore.collection("User");
-        collectionRef.document().set(user);
-    }
 
+        // PK로 사용할 user_id 자동 생성
+        user.setUser_id(UUID.randomUUID().toString());
+        collectionRef.document(user.getUser_id()).set(user);
+    }
 
     public void deleteUser(String user_id) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
