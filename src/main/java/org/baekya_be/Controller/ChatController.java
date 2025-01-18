@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +32,23 @@ public class ChatController {
     @GetMapping("/search")
     public List<String> searchChat() {
         return data;
+    }
+
+    @GetMapping("/chatbot")
+    public ResponseEntity<Map<String, Object>> initChatSession() {
+
+        String welcomeMessage1 = "안녕하세요!";
+        String welcomeMessage2 = "직무와 관련된 경험을 저에게 공유해주세요";
+
+        List<String> messages = new ArrayList<>();
+        messages.add(welcomeMessage1);
+        messages.add(welcomeMessage2);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("role", "assistant");
+        response.put("content", messages);
+
+        return ResponseEntity.ok(response);
     }
 
 
