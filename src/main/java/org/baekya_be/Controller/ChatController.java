@@ -87,7 +87,7 @@ public class ChatController {
         RestTemplate restTemplate = new RestTemplate();
 
 
-        content2 = request + "직무와 관련해서 요약할게 없으면 다른 대답 없이 빈칸 하나만 대답해줘. 이것을 직무에 관련된 것만 요약해서 다른 대답 없이 요약한 것만을 출력해줘. '합니다' 처럼 격식체로 출력해줘.  ";
+        content2 = request + "직무와 관련해서 요약할게 없으면 다른 대답 없이 '.' 하나만 대답해줘. 이것을 직무에 관련된 것만 요약해서 다른 대답 없이 요약한 것만을 출력해줘. '합니다' 처럼 격식체로 출력해줘.  ";
 
         Map<String, Object> requestPayload2 = new HashMap<>();
         requestPayload2.put("model", "gpt-4o");
