@@ -66,7 +66,11 @@ public class SeniorService {
                 if (experience != null) {
                     String[] words = experience.replace(".", "").split("\\s+");
                     for (String word : words) {
-                        if (word.equals(keyword)) {
+                        String substring = "";
+                        if (word != null && word.length() > 1) {
+                            substring = word.substring(0, word.length() - 1); // 마지막 문자 제외
+                        }
+                        if (word.equals(keyword) || substring.equals(keyword)) {
                             flag = true;
                             break;
                         }
