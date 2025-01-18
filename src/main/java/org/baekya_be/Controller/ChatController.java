@@ -71,7 +71,7 @@ public class ChatController {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Object> requestPayload = new HashMap<>();
-        requestPayload.put("model", "gpt-4");
+        requestPayload.put("model", "gpt-4o");
         requestPayload.put("messages", Collections.singletonList(
                 Map.of("role", "user", "content", content)
         ));
@@ -83,10 +83,10 @@ public class ChatController {
             Thread.sleep(100);
         } catch (InterruptedException e) {}
 
-        content2 = request + "1+1의 답도 출력해주세요";
+        content2 = request + "그리고 이 질문에 대한 답변을 요약해주세요";
 
         Map<String, Object> requestPayload2 = new HashMap<>();
-        requestPayload2.put("model", "gpt-4");
+        requestPayload2.put("model", "gpt-4o");
         requestPayload2.put("messages", Collections.singletonList(
                 Map.of("role", "user", "content", content2)
         ));
