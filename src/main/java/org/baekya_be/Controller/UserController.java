@@ -36,4 +36,6 @@ public class UserController {
         userService.addUser(user);
         return ResponseEntity.ok("User added successfully");
     }
+
+    // for GitHub test
 }
