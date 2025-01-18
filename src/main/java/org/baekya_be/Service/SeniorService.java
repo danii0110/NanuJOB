@@ -45,8 +45,12 @@ public class SeniorService {
         DocumentSnapshot document = documents.get(0);
         String documentId = document.getId();
 
+        String currentExperience = document.getString("experience");
+
+        String updatedExperience = currentExperience != null ? currentExperience + " " + dto.getExperience() : dto.getExperience();
+
         Map<String, Object> updates = new HashMap<>();
-        updates.put("experience", dto.getExperience());
+        updates.put("experience", updatedExperience);
 
         collectionRef.document(documentId).update(updates).get();
     }
