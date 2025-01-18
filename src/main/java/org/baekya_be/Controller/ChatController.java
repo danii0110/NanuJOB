@@ -11,6 +11,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
+import org.baekya_be.Domain.Senior;
+
 
 @Slf4j
 @RestController
@@ -62,6 +64,8 @@ public class ChatController {
             return ResponseEntity.badRequest().body("Content cannot be empty.");
         }
 
+        String content2;
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + API_KEY);
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -75,16 +79,36 @@ public class ChatController {
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestPayload, headers);
         RestTemplate restTemplate = new RestTemplate();
 
+
+        content2 = content + "을 요약해 줘";
+
+        Map<String, Object> requestPayload2 = new HashMap<>();
+        requestPayload.put("model", "gpt-3.5-turbo");
+        requestPayload.put("messages", Collections.singletonList(
+                Map.of("role", "user", "content", content2)
+        ));
+        HttpEntity<Map<String, Object>> request2 = new HttpEntity<>(requestPayload, headers);
+        RestTemplate restTemplate2 = new RestTemplate();
+
+
         try {
             log.info("Sending request to OpenAI API...");
             log.info("User content: " + content);
+            log.info("User content: " + content2);
 
             ResponseEntity<String> response = restTemplate.postForEntity(OPENAI_API_URL, request, String.class);
+
+            ResponseEntity<String> response2 = restTemplate.postForEntity(OPENAI_API_URL, request2, String.class);
 
             log.info("Response Status: " + response.getStatusCode());
             log.info("Response Body: " + response.getBody());
 
+            log.info("Response Status for summary: " + response2.getStatusCode());
+            log.info("Response Body for summary: " + response2.getBody());
+
             return ResponseEntity.ok(response.getBody());
+
+
         } catch (Exception e) {
             log.error("Error communicating with OpenAI API", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing the request.");
