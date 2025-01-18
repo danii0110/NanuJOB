@@ -71,7 +71,7 @@ public class ChatController {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Object> requestPayload = new HashMap<>();
-        requestPayload.put("model", "gpt-3.5-turbo");
+        requestPayload.put("model", "gpt-4");
         requestPayload.put("messages", Collections.singletonList(
                 Map.of("role", "user", "content", content)
         ));
@@ -79,15 +79,18 @@ public class ChatController {
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestPayload, headers);
         RestTemplate restTemplate = new RestTemplate();
 
+        try{
+            Thread.sleep(100);
+        } catch (InterruptedException e) {}
 
-        content2 = content + "을 요약해 줘";
+        content2 = request + "1+1의 답도 출력해주세요";
 
         Map<String, Object> requestPayload2 = new HashMap<>();
-        requestPayload.put("model", "gpt-3.5-turbo");
-        requestPayload.put("messages", Collections.singletonList(
+        requestPayload2.put("model", "gpt-4");
+        requestPayload2.put("messages", Collections.singletonList(
                 Map.of("role", "user", "content", content2)
         ));
-        HttpEntity<Map<String, Object>> request2 = new HttpEntity<>(requestPayload, headers);
+        HttpEntity<Map<String, Object>> request2 = new HttpEntity<>(requestPayload2, headers);
         RestTemplate restTemplate2 = new RestTemplate();
 
 
@@ -97,16 +100,18 @@ public class ChatController {
             log.info("User content: " + content2);
 
             ResponseEntity<String> response = restTemplate.postForEntity(OPENAI_API_URL, request, String.class);
-
-            ResponseEntity<String> response2 = restTemplate.postForEntity(OPENAI_API_URL, request2, String.class);
-
             log.info("Response Status: " + response.getStatusCode());
             log.info("Response Body: " + response.getBody());
 
-            log.info("Response Status for summary: " + response2.getStatusCode());
-            log.info("Response Body for summary: " + response2.getBody());
+            Thread.sleep(100);
 
-            return ResponseEntity.ok(response.getBody());
+            ResponseEntity<String> response2 = restTemplate2.postForEntity(OPENAI_API_URL, request2, String.class);
+
+            log.info("Response2 Status: " + response2.getStatusCode());
+            log.info("Response2 Body: " + response2.getBody());
+
+
+            return ResponseEntity.ok(response2.getBody());
 
 
         } catch (Exception e) {
