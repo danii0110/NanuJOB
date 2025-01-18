@@ -160,6 +160,16 @@ public class SeniorService {
                     }
                 }
 
+                if (!matchFound && job != null) {
+                    String[] jobParts = job.split("/");
+                    for (String jobPart : jobParts) {
+                        if (jobPart.equals(keywordPart)) {
+                            matchFound = true;
+                            break;
+                        }
+                    }
+                }
+
                 if (!matchFound &&
                         (Objects.equals(job, keywordPart) ||
                                 Objects.equals(name, keywordPart) ||
