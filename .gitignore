@@ -38,5 +38,3 @@ out/
 /src/main/resources/baekya-firebase.json
 /.gitattributes
 /src/main/java/org/baekya_be/Key/GPT_KEY.java
-
-/README.md
